@@ -1,40 +1,56 @@
 <div class="tab-pane" id="tab-ocf_description">
     <button type="button" class="btn btn-warning" id="add-seo-value">Добавить</button>
     <ul class="nav nav-tabs" id="value-list">
-        <li class="active"><a href="#tab-ocf_description_value1" class = "value-1" data-toggle="tab">1 значение</a></li>
+        <li class="active"><a href="#tab-ocf_description_value1" class = "value-1" data-toggle="tab" aria-expanded="true">1 значение</a></li>
     </ul>
     <div class="value-descriptions tab-content" id = "value-tabs">
-        <div class="tab-pane" id="tab-ocf_description_value1">
+        <div class="tab-pane active" id="tab-ocf_description_value1">
             <div class="ocfilter-option">
                 <span class="options">название опции</span>
-                <select name="option-name" id="options">
-                    <option value="1">Опция 1</option>
-                    <option value="2">Опция 2</option>
+                <select name="option-name" class="options">
+                    {% for option in ocfilterOptions %}
+                    <option value="{{ option.option_id }}">{{ option.name }}</option>
+                    {% endfor %}
                 </select>
                 <span class="values">Значение опции</span>
-                <select name="value-name" id="values">
-                    <option value="1">Значение 1</option>
-                    <option value="2">Значение 2</option>
+                <select name="value-name" class="values">
                 </select>
             </div>
             <ul class="nav nav-tabs" id="languages">
                 {% for language in languages %}
+                    {% if language.language_id == '1' %}
+                    <li class ="active"><a href="#language{{ language.language_id }}tab-ocf_description_value1" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /> {{ language.name }}</a></li>
+                    {% else %}
                     <li><a href="#language{{ language.language_id }}tab-ocf_description_value1" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /> {{ language.name }}</a></li>
+                    {% endif %}
                 {% endfor %}
             </ul>
             <div class="tab-content">
+
                 {% for language in languages %}
+
+                    {% if language.language_id == '1' %}
+                    <div class="tab-pane active" id="language{{ language.language_id }}tab-ocf_description_value1">
+                     {% else %}
                     <div class="tab-pane" id="language{{ language.language_id }}tab-ocf_description_value1">
+                    {% endif %}
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="input-ocf_description1{{ language.language_id }}">{{ entry_description }}</label>
                             <div class="col-sm-10">
-                                <textarea name="ocf_description[1][{{ language.language_id }}][description]" placeholder="{{ entry_description }}" id="input-ocf_description1{{ language.language_id }}" data-toggle="summernote" data-lang="{{ summernote }}" class="form-control">{{ category_description[language.language_id] ? category_description[language.language_id].description }}</textarea>
+                                <textarea
+                                        name="ocf_description[{{ language.language_id }}][option_id][value_id][description]"
+                                        placeholder="{{ entry_description }}"
+                                        id="input-ocf_description1{{ language.language_id }}"
+                                        data-toggle="summernote" data-lang="{{ summernote }}"
+                                        class="form-control value-seo-area">
+                                        {{ category_description[language.language_id] ? category_description[language.language_id].description }}
+                                </textarea>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
-
         </div>
     </div>
+</div>
 </div>
