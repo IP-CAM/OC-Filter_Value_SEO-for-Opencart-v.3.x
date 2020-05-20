@@ -29,7 +29,7 @@ class ModelExtensionModuleOcfilterValueSeo extends Model {
                         option_id = '".$optionId."',
                         value_id = '".$valueId."',
                         language_id = '".$languageId."',
-                        description = '".$seo['description']."'";
+                        description = '".trim($seo['description'])."'";
 
                     $this->db->query($sql);
                 }
