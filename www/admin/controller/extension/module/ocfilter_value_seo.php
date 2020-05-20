@@ -1,15 +1,13 @@
 <?php
 class ControllerExtensionModuleOcfilterValueSeo extends Controller {
 
-	public function index($languages)
+	public function index($data)
     {
-
-        $data['languages'] = $languages;
-
         $this->load->model('extension/module/ocfilter_value_seo');
 
         $data['ocfilterOptions'] =$this->model_extension_module_ocfilter_value_seo->getOcfilterOptions();
-//dd($data['ocfilterOptions']);
+        $data['ocf_descriptions'] =$this->model_extension_module_ocfilter_value_seo->getOcValuesSeo($data['categoryId']);
+
         return $this->load->view('extension/module/ocfilter_value_seo', $data);
     }
 

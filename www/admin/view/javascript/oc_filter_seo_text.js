@@ -42,8 +42,8 @@ function addValueTab(valueNumber) {
         valueTab.innerHTML = `                
                         ${ocfilterOptions}${ocfilterValues}
                         <ul class="nav nav-tabs" id="languages${valueNumber}">
-                                                    <li class=""><a href="#language1tab-ocf_description_value${valueNumber}" data-toggle="tab" aria-expanded="true"><img src="language/ru_UA/ru_UA.png" title="Russian"> Russian</a></li>
-                                                    <li class="active"><a href="#language3tab-ocf_description_value${valueNumber}" data-toggle="tab" aria-expanded="true"><img src="language/uk_UA/uk_UA.png" title="Ukrainian"> Ukrainian</a></li>
+                                                    <li class="active"><a href="#language1tab-ocf_description_value${valueNumber}" data-toggle="tab" aria-expanded="true"><img src="language/ru_UA/ru_UA.png" title="Russian"> Russian</a></li>
+                                                    <li class=""><a href="#language3tab-ocf_description_value${valueNumber}" data-toggle="tab" aria-expanded="true"><img src="language/uk_UA/uk_UA.png" title="Ukrainian"> Ukrainian</a></li>
                                             </ul>
                         
                         <div class="tab-content">
@@ -53,7 +53,7 @@ function addValueTab(valueNumber) {
                                         <div class="col-sm-10">
                                             <textarea 
                                             
-                                            name="ocf_description[1][option_id][value_id][description]" 
+                                            name="ocf_description[option_id][value_id][1][description]" 
                                             placeholder="Описание" 
                                             id="input-ocf_description-${valueNumber}-1" 
                                             data-toggle="summernote" 
@@ -67,7 +67,7 @@ function addValueTab(valueNumber) {
                                       <label class="col-sm-2 control-label" for="input-ocf_description-${valueNumber}-3">Описание</label>
                                         <div class="col-sm-10">
                                              <textarea                                             
-                                            name="ocf_description[3][option_id][value_id][description]" 
+                                            name="ocf_description[option_id][value_id][3][description]" 
                                             placeholder="Описание" 
                                             id="input-ocf_description-${valueNumber}-1" 
                                             data-toggle="summernote" 
@@ -163,8 +163,8 @@ function updateTabName(){
     let currentTabName = document.querySelector('#value-list li.active a')
     currentTabName.innerHTML = optionText + ' </br> ' + valueText;
     let currentTab =  $(this.closest('.tab-pane')).find('.value-seo-area');
-    currentTab[0].name = `ocf_description[1][${optionId}][${valueId}][description]`;
-    currentTab[1].name = `ocf_description[3][${optionId}][${valueId}][description]`;
+    currentTab[0].name = `ocf_description[${optionId}][${valueId}][1][description]`;
+    currentTab[1].name = `ocf_description[${optionId}][${valueId}][3][description]`;
 }
 
 const ocFilterValues = {
