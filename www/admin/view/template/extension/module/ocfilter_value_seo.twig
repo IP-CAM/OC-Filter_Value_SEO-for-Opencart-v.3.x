@@ -9,9 +9,9 @@
             {% else %}
                 {% set liclassactive='' %}
             {% endif %}
-            <li class="{{ liclassactive }}">
+            <li class="{{ liclassactive }}" id ="values-list-item_{{value.1.value_id}}">
                 <a href="#tab-ocf_description_{{ value.1.value_id }}"
-                   class = "value-1" data-toggle="tab"
+                   class = "value-list-nav" data-toggle="tab"
                    aria-expanded={{ expanded }}>
                     {{ value.1.option_name }} <br/>
                     {{ value.1.value_name }}
@@ -27,7 +27,7 @@
             {% else %}
                 {% set classactive='' %}
             {% endif %}
-            <div class="tab-pane {{ classactive }}" id="tab-ocf_description_{{ tabvalue.1.value_id }}">
+            <div class="tab-pane value-desc {{ classactive }}" id="tab-ocf_description_{{ tabvalue.1.value_id }}">
                 <div class="ocfilter-option">
                 <span class="options">название опции</span>
                 <select name="option-name" class="options">
@@ -53,6 +53,9 @@
                             {% endfor %}
                 </select>
             </div>
+                <button type="button" class="btn btn-danger btn-lg del-ocf-tab" id ="del-{{ tabvalue.1.value_id }}" >
+                    Удалить
+                </button>
                 <ul class="nav nav-tabs" id="languages">
                 {% for language in languages %}
                     {% if language.language_id == '1' %}
@@ -90,3 +93,15 @@
         {% endfor %}
     </div>
 </div>
+<style>
+.del-ocf-tab {
+    position: absolute;
+    right: 42px;
+    top: 0px;
+    font-size: 12px;
+}
+    .value-desc{
+        position: relative;
+    }
+
+</style>

@@ -12,10 +12,10 @@ function addValueItem() {
 function addValueToList(valueNumber) {
 
     let valueItem=document.createElement('li');
-
+    valueItem.id = `values-list-item_value${valueNumber}`;
     valueItem.innerHTML = `<a href="#tab-ocf_description_value${valueNumber}" 
-                                class = "value-${valueNumber}" 
-                                data-toggle="tab">${valueNumber} значение
+                                class = "value-list-nav" 
+                                data-toggle="tab">значение
                              </a>`;
     ocFilterValues.valueList.appendChild(valueItem);
 }
@@ -35,12 +35,19 @@ function addValueTab(valueNumber) {
                           </select>
                           </div>`;
 
+
+
     let valueTab= document.createElement('div');
         valueTab.classList.add(`tab-pane`);
+        valueTab.classList.add(`value-desc`);
         valueTab.id = 'tab-ocf_description_value'+valueNumber;
 
         valueTab.innerHTML = `                
                         ${ocfilterOptions}${ocfilterValues}
+                        <button type="button" class="btn btn-danger btn-lg del-ocf-tab" 
+                                id ="del-value${valueNumber}" >
+                            Удалить
+                        </button>
                         <ul class="nav nav-tabs" id="languages${valueNumber}">
                                                     <li class="active"><a href="#language1tab-ocf_description_value${valueNumber}" data-toggle="tab" aria-expanded="true"><img src="language/ru_UA/ru_UA.png" title="Russian"> Russian</a></li>
                                                     <li class=""><a href="#language3tab-ocf_description_value${valueNumber}" data-toggle="tab" aria-expanded="true"><img src="language/uk_UA/uk_UA.png" title="Ukrainian"> Ukrainian</a></li>
@@ -149,7 +156,7 @@ function updateOptionValues(event) {
     if (values){
         valuesHtml = getHtmlForValuesSelect(values);
     }
-    console.log($(this).siblings('select.values').first());
+
     $(this).siblings('select.values')[0].innerHTML = valuesHtml;
 }
 
@@ -167,6 +174,18 @@ function updateTabName(){
     currentTab[1].name = `ocf_description[${optionId}][${valueId}][3][description]`;
 }
 
+function delValueTab (){
+
+    valueId = this.id.split('-')[1];
+
+    let valueTab = this.closest(`#tab-ocf_description_${valueId}`);
+    let valuesListItem =document.getElementById(`values-list-item_${valueId}`);
+    valueTab.remove();
+    valuesListItem.remove();
+    $('.value-list-nav').first().trigger('click');
+}
+
+
 const ocFilterValues = {
   values:{},
   valuecount:1,
@@ -175,11 +194,15 @@ const ocFilterValues = {
   ocfilterOptions:{},
 };
 
+
+
+
 //events
 document.addEventListener('DOMContentLoaded',getOcFilterOptions);
 listenerUpdate();
 function listenerUpdate(){
     $('.options').on(        'change',updateOptionValues);
     $('.values').on('change',updateTabName);
+    $('.del-ocf-tab').on('click',delValueTab);
 }
 
