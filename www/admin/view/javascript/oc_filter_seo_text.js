@@ -7,6 +7,8 @@ function addValueItem() {
     addValueToList(valueNumber);
     addValueTab(valueNumber);
     listenerUpdate();
+    let valuesListItem =document.getElementById(`values-list-item_value${valueNumber}`);
+    $(valuesListItem).find('a').trigger('click');
 }
 
 function addValueToList(valueNumber) {
