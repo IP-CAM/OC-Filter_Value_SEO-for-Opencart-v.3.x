@@ -96,7 +96,9 @@ class ModelExtensionModuleOcfilterValueSeoFront extends Model {
 
         foreach ($SeoOptionsForCategory as $valueId=>$seoValue){
             if (in_array($valueId, $selectedValues)){
-                $description[]=htmlspecialchars_decode($seoValue[$languageId]['description']);
+                if(isset($seoValue[$languageId])) {
+                    $description[] = htmlspecialchars_decode($seoValue[$languageId]['description']);
+                }
             }
         }
 
