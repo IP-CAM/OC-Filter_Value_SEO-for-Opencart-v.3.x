@@ -368,6 +368,14 @@ final class OCFilter {
 			    $seoName = '';
             }
 
+/*
+* /hide some values
+*/
+			$isAttribute = false;
+            if (isset($value['is_attribute'])&& $value['is_attribute'] == '1'){
+                $isAttribute = true;
+            }
+
 	          $values[] = array(
 	            'value_id' => $value['value_id'],
 							'id'       => $option['option_id'] . $value['value_id'],
@@ -378,7 +386,8 @@ final class OCFilter {
               'image'    => $image,
 	            'params'   => $params,
 							'count'    => $count,
-	            'selected' => $this_value
+	            'selected' => $this_value,
+                  'is_attribute'=>$isAttribute
 	          );
 					}
         }

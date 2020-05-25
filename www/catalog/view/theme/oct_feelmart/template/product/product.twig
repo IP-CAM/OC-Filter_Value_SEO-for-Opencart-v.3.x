@@ -1,0 +1,1058 @@
+{{ header }}
+<div id="product-product" class="container">
+	{{ oct_breadcrumbs }}
+	<div class="row">
+		<div class="col-12">
+			<h1 class="fm-main-title fm-page-title">{{ heading_title }}</h1>
+		</div>
+	</div>
+	<div class="content-top-box">{{ content_top }}</div>
+	<div id="content" class="row fm-product-box no-gutters">
+		<div class="col-lg-8">
+			<div class="fm-proruct-left h-100">
+				<div class="fm-proruct-left-top{% if attribute_groups %} with-border{% endif %}">
+					<div class="fm-product-left-top-info d-sm-flex justify-content-between">
+						<ul class="fm-product-left-top-info-list list-unstyled">
+							<li class="fm-product-left-top-info-item fm-product-left-info-item-stock{% if out_of_stock %} fm-out-of-stock{% endif %}">{{ text_stock }} <span class="fm-product-left-top-info-is">{{ stock }}</span></li>
+							{% if oct_feelmart_data.product_model is defined and oct_feelmart_data.product_model == 'on' %}
+							<li class="fm-product-left-top-info-item fm-product-left-top-info-item-code">{{ text_model }} {{ model }}</li>
+							{% endif %}
+						</ul>
+						<div class="fm-product-left-top-info-block">
+							{% if review_status %}
+							<div class="fm-module-rating d-flex align-items-center justify-content-sm-center">
+								<div class="fm-product-left-top-info-block-reviews">
+									{{ oct_product_reviews }} <a href="javascript:;" onclick="scrollToElement('#fm-product-page-reviews');">({{ total_reviews }})</a>
+								</div>
+								<div class="fm-module-rating-stars d-flex align-items-center">
+									{% for i in 1..5 %}
+									{% if rating < i %}
+									<span class="fm-module-rating-star"></span>
+									{% else %}
+									<span class="fm-module-rating-star fm-module-rating-star-is"></span>
+									{% endif %}
+									{% endfor %}
+								</div>
+							</div>
+							{% endif %}
+							{% if manufacturer %}
+							<div class="fm-product-left-top-info-block-brand text-sm-right">
+								{{ text_manufacturer }} <a href="{{ manufacturers }}">{{ manufacturer }}</a>
+							</div>
+							{% endif %}
+						</div>
+					</div>
+					{% if thumb or images %}					
+					{% if thumb %}
+					<div class="fm-product-left-top-photo-main">	
+						<a href="javascript:;" class="oct-gallery">
+							<img src="{{ thumb }}" class="img-fluid" alt="{{ heading_title }}" title="{{ heading_title }}" />
+						</a>
+					</div>
+					{% endif %}
+					{% if images %}
+					<div class="image-additional-box">
+						<div id="image-additional" class="owl-carousel image-additional-list">
+							{% for key,image in images %}
+							{% set i = key + 1 %}
+							<div class="image-additional-item">
+								<a class="additional-gallery-item{% if key == 0 %} active{% endif %}" href="{{ image.popup }}" data-href="{{ image.popup }}">
+								<img src="{{ image.thumb }}" title="{{ heading_title }}" alt="{{ heading_title }}" />
+								</a>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
+					<script>
+						$(function () {
+							setTimeout(function(){
+						        $('.image-additional-box').fadeIn('fast');
+						    },500);
+						
+						    $('#image-additional').owlCarousel({
+							    loop:false,
+							    margin:15,
+							    nav:true,
+							    dots: false,
+							    autoplay: false,
+							    responsive:{
+							        0:{
+							            items:2
+							        },
+							        400:{
+							            items: 3,
+										margin: 20
+							        },
+							        768: {
+						                      items: 6
+						                  }
+							    }
+							})
+						});
+					</script>
+					{% endif %}
+					{% endif %}
+					<div id="product_mobile_top"></div>
+					<ul class="fm-product-description-nav list-unstyled d-flex align-items-center">
+						{% if description %}
+						<li class="fm-product-description-nav-item fm-product-description-nav-item-active">
+							<a href="javascript:;">{{ oct_product_maintab }}</a>
+						</li>
+						{% endif %}
+						{% if attribute_groups %}
+						<li class="fm-product-description-nav-item{% if not description %} fm-product-description-nav-item-active{% endif %}">
+							<a href="javascript:;" onclick="scrollToElement('#fm-product-attributes');">{{ tab_attribute }}</a>
+						</li>
+						{% endif %}
+						{% if product_params %}
+							<li class="fm-product-description-nav-item{% if not description %} fm-product-description-nav-item-active{% endif %}">
+								<a href="javascript:;" onclick="scrollToElement('#fm-product-params');">{{ tab_attribute }}</a>
+							</li>
+						{% endif %}
+						{% if (dop_tab.title is defined and dop_tab.title) and (dop_tab.text is defined and dop_tab.text) %}
+						<li class="fm-product-description-nav-item">
+							<a href="javascript:;" onclick="scrollToElement('#fm-related-dop_tab-row');">{{ dop_tab.title }}</a>
+						</li>
+						{% endif %}
+						{% if oct_product_extra_tabs %}
+						{% set key = 0 %}
+						{% for extra_tab in oct_product_extra_tabs %}
+						{% set key = key + 1 %}
+						<li class="fm-product-description-nav-item">
+							<a href="javascript:;" onclick="scrollToElement('#fm-product-extra-tab-{{ key }}');">{{ extra_tab.title }}</a>
+						</li>
+						{% endfor %}
+						{% endif %}
+						{% if review_status %}
+						<li class="fm-product-description-nav-item{% if not description and not attribute_groups %} fm-product-description-nav-item-active{% endif %}">
+							<a href="javascript:;" onclick="scrollToElement('#fm-product-page-reviews');">{{ tab_review }}</a>
+						</li>
+						{% endif %}
+						{% if products %}
+						<li class="fm-product-description-nav-item">
+							<a href="javascript:;" onclick="scrollToElement('#fm-related-products-row');">{{ oct_product_related }}</a>
+						</li>
+						{% endif %}
+					</ul>
+					{% if description %}
+					<div class="fm-product-description-cont">
+						{{ description }}
+						{% if tags %}
+						<p class="fm-product-tags">{{ text_tags }}
+							{% for i in 0..tags|length %}
+							{% if i < (tags|length - 1) %} <a href="{{ tags[i].href }}">{{ tags[i].tag }}</a>,
+							{% else %} <a href="{{ tags[i].href }}">{{ tags[i].tag }}</a> {% endif %}
+							{% endfor %}
+						</p>
+						{% endif %}
+					</div>
+					{% endif %}
+					{% if (dop_tab.title is defined and dop_tab.title) and (dop_tab.text is defined and dop_tab.text) %}
+					<div id="fm-related-dop_tab-row" class="fm-product-description-cont">
+						<div class="fm-page-main-title">{{ dop_tab.title }}</div>
+						{{ dop_tab.text }}
+					</div>
+					{% endif %}
+					{% if oct_product_extra_tabs %}
+					{% set key = 0 %}
+					{% for extra_tab in oct_product_extra_tabs %}
+					{% set key = key + 1 %}
+					<div id="fm-product-extra-tab-{{ key }}" class="fm-product-description-cont">
+						<div class="fm-page-main-title">{{ extra_tab.title }}</div>
+						{{ extra_tab.text }}
+					</div>
+					{% endfor %}
+					{% endif %}
+				</div>
+				{% if attribute_groups %}
+				<div id="fm-product-attributes" class="fm-product-attributtes">
+					{% if description %}
+					<div class="fm-page-main-title">{{ oct_product_attributes_tab }}</div>
+					{% endif %}
+					{% for attribute_group in attribute_groups %}
+					<div class="fm-product-attributtes-cont">
+						<div class="fm-product-attributtes-title">{{ attribute_group.name }}</div>
+						{% for attribute in attribute_group.attribute %}
+						<div class="fm-product-attributtes-item d-flex justify-content-between">
+							<span>{{ attribute.name }}</span>
+							<span>{{ attribute.text }}</span>
+						</div>
+						{% endfor %}
+					</div>
+					{% endfor %}
+				</div>
+				{% endif %}
+				{% if product_params %}
+					<div id="fm-product-params" class="fm-product-attributtes">
+
+						{% for param in product_params %}
+
+							<div class="fm-product-attributtes-cont">
+
+								<div class="fm-product-attributtes-item d-flex justify-content-between">
+									<div class="param-name">
+										<span>{{ param.name }}</span>
+									</div>
+									<div class="param-values">
+										{% for value in param.values %}
+											{% if value.is_attribute =='1' %}
+												<span >{{ value.value_name }}</span>
+											{% else %}
+												<span class="filtered"><a href="{{ value.path }}">{{ value.value_name }}</a></span>
+											{% endif %}
+										{% endfor %}
+									</div>
+								</div>
+
+							</div>
+						{% endfor %}
+					</div>
+				{% endif %}
+			</div>
+		</div>
+		<div id="fm_product_right_inner" class="col-lg-4">
+			<div id="fm_product_right" class="fm-product-right h-100">
+				<div class="fm-product-right-top">
+					{% if price %}
+					<div class="fm-price-block fm-product-right-block">
+						<div class="fm-module-price d-flex align-items-center">
+							{% if not special %}
+							<span class="fm-module-price-new">{{ price }}</span>
+							{% else %}
+							<span class="fm-module-price-new">{{ special }}</span>
+							<span class="fm-module-price-old">{{ price }}</span>
+							{% endif %}
+						</div>
+						{% if tax %}
+						<div class="fm-price-block-info fm-price-block-info-tax">{{ text_tax }} {{ tax }}</div>
+						{% endif %}
+						{% if special %}
+						<div class="fm-price-block-info fm-product-you-save">
+							{{ oct_product_you_save }} <span class="fm-module-you-save-price">{{ you_save_price }}</span> {{ you_save }}
+						</div>
+						{% endif %}
+						{% if discounts %}
+						{% for discount in discounts %}
+						<div class="fm-price-block-info">{{ discount.quantity }}{{ text_discount }}{{ discount.price }}</div>
+						{% endfor %}
+						{% endif %}
+					</div>
+					{% endif %}
+					<div id="product" class="fm-product-action">
+						{% if options or minimum > 1 or points or reward or cognates_products %}
+							<!-- show oc filter atributes -->
+							{% if cognates_products %}
+								<div id="fm-product-cognates-box" class="fm-product-option fm-product-right-block">
+									{% for param in cognates_products %}
+										{% if param.show_option  %}
+											<div class="param-list">
+												<div class ="font-weight-bold h6">{{ param.option_name }}</div>
+												<div class="param-values">
+													<ul class="list-inline">
+														{% for value in param.values %}
+															{% if value.product_id %}
+																<li class="list-inline-item option-value-name
+															{{value.selected }}">
+																<span class="value-name">
+																	{% if value.selected %}
+																		{{ value.value_name }}
+																	{% else %}
+																		<a href="{{ value.url }}">
+																			{{ value.value_name }}
+																		</a>
+																	{% endif %}
+																</span>
+																</li>
+															{% endif %}
+														{% endfor %}
+													</ul>
+												</div>
+											</div>
+										{% endif %}
+									{% endfor %}
+								</div>
+							{% endif %}
+							<!-- show oc filter attributes -->
+						<div id="fm-product-options-box" class="fm-product-option fm-product-right-block">
+							{% if options %}
+							<div class="fm-product-option-title">{{ text_option }}</div>
+							{% for option in options %}
+							{% if option.type == 'select' %}
+							<div class="form-group">
+								<label class="fm-control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}{% if option.required %}<span class="required">*</span> {% endif %}</label>
+								<select name="option[{{ option.product_option_id }}]" id="input-option{{ option.product_option_id }}" class="fm-select form-control">
+									<option value="">{{ text_select }}</option>
+									{% for option_value in option.product_option_value %}
+									<option value="{{ option_value.product_option_value_id }}">{{ option_value.name }}
+										{% if option_value.price %}
+										({{ option_value.price_prefix }}{{ option_value.price }})
+										{% endif %}
+									</option>
+									{% endfor %}
+								</select>
+							</div>
+							{% endif %}
+							{% if option.type == 'radio' %}
+							<div class="form-group">
+								<label class="fm-control-label">{{ option.name }}{% if option.required %}<span class="required">*</span>{% endif %}</label>
+								<div id="input-option{{ option.product_option_id }}" class="options-box d-flex">
+									{% for option_value in option.product_option_value %}
+									<div class="radio">
+										<label data-toggle="tooltip" data-trigger="hover" class="option optid-{{ option.product_option_id }} not-selected {% if option_value.image %} radio-img{% else %}fm-radio{% endif %}" {% if option_value.price %}title="{{ option_value.price_prefix }}{{ option_value.price }}"{% endif %}>
+										<input type="radio" name="option[{{ option.product_option_id }}]" value="{{ option_value.product_option_value_id }}" class="input-radio" />
+										{% if option_value.image %}
+										<img src="{{ option_value.image }}" alt="{{ option_value.name }} {% if option_value.price %} {{ option_value.price_prefix }} {{ option_value.price }} {% endif %}"  />
+										{% else %}
+										{{ option_value.name }}
+										{% endif %}
+										</label>
+										<script>
+											$(document).ready(function() {
+												$('label.optid-{{ option.product_option_id }}').click(function(){
+													$('label.optid-{{ option.product_option_id }}').removeClass('selected').addClass('not-selected');
+													$(this).removeClass('not-selected').addClass('selected');
+												});
+											});
+										</script>
+									</div>
+									{% endfor %}
+								</div>
+							</div>
+							{% endif %}
+							{% if option.type == 'checkbox' %}
+							<div class="form-checkbox-group">
+								<div class="fm-control-label">{{ option.name }}{% if option.required %}<span class="required">*</span>{% endif %}</div>
+								<div id="input-option{{ option.product_option_id }}">
+									{% for option_value in option.product_option_value %}
+									<div class="checkbox">
+										<label>
+										{% if option_value.image %}<img src="{{ option_value.image }}" alt="{{ option_value.name }} {% if option_value.price %} {{ option_value.price_prefix }} {{ option_value.price }} {% endif %}" class="img-thumbnail" />{% endif %}
+										<input type="checkbox" id="option[{{ option.product_option_id }}][{{ option_value.product_option_value_id }}]" name="option[{{ option.product_option_id }}][]" value="{{ option_value.product_option_value_id }}" class="fm-form-checkbox-input" />
+										<span class="check-box"></span>
+										{{ option_value.name }}
+										{% if option_value.price %}
+										({{ option_value.price_prefix }}{{ option_value.price }})
+										{% endif %}
+										</label>
+									</div>
+									{% endfor %}
+								</div>
+							</div>
+							{% endif %}
+							{% if option.type == 'text' %}
+							<div class="form-group">
+								<label class="fm-control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}{% if option.required %}<span class="required">*</span> {% endif %}</label>
+								<input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" placeholder="{{ option.name }}" id="input-option{{ option.product_option_id }}" class="form-control" />
+							</div>
+							{% endif %}
+							{% if option.type == 'textarea' %}
+							<div class="form-group">
+								<label class="fm-control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}{% if option.required %}<span class="required">*</span>{% endif %}</label>
+								<textarea name="option[{{ option.product_option_id }}]" rows="5" placeholder="{{ option.name }}" id="input-option{{ option.product_option_id }}" class="form-control">{{ option.value }}</textarea>
+							</div>
+							{% endif %}
+							{% if option.type == 'file' %}
+							<div class="form-group">
+								<label class="fm-control-label">{{ option.name }}{% if option.required %}<span class="required">*</span>{% endif %}</label>
+								<button type="button" id="button-upload{{ option.product_option_id }}" data-loading-text="{{ text_loading }}" class="fm-btn fm-btn-blue"><i class="fa fa-upload"></i> {{ button_upload }}</button>
+								<input type="hidden" name="option[{{ option.product_option_id }}]" value="" id="input-option{{ option.product_option_id }}" />
+							</div>
+							{% endif %}
+							{% if option.type == 'date' %}
+							<div class="form-group">
+								<label class="fm-control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}{% if option.required %}<span class="required">*</span>{% endif %}</label>
+								<div class="input-group date">
+									<input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="YYYY-MM-DD" id="input-option{{ option.product_option_id }}" class="form-control" />
+									<span class="input-group-btn">
+									<button class="fm-btn fm-input-with-btn" type="button"><i class="fa fa-calendar"></i></button>
+									</span>
+								</div>
+							</div>
+							{% endif %}
+							{% if option.type == 'datetime' %}
+							<div class="form-group">
+								<label class="fm-control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}{% if option.required %}<span class="required">*</span>{% endif %}</label>
+								<div class="input-group datetime">
+									<input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="YYYY-MM-DD HH:mm" id="input-option{{ option.product_option_id }}" class="form-control" />
+									<span class="input-group-btn">
+									<button type="button" class="fm-btn fm-input-with-btn"><i class="fa fa-calendar"></i></button>
+									</span>
+								</div>
+							</div>
+							{% endif %}
+							{% if option.type == 'time' %}
+							<div class="form-group">
+								<label class="fm-control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}{% if option.required %}<span class="required">*</span>{% endif %}</label>
+								<div class="input-group time">
+									<input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="HH:mm" id="input-option{{ option.product_option_id }}" class="form-control" />
+									<span class="input-group-btn">
+									<button type="button" class="fm-btn fm-input-with-btn"><i class="fa fa-clock"></i></button>
+									</span>
+								</div>
+							</div>
+							{% endif %}
+							{% endfor %}
+							{% endif %}
+							{% if minimum > 1 %}
+							<div class="fm-product-option-minquant">{{ text_minimum }}</div>
+							{% endif %}
+							{% if points %}
+							<div class="fm-product-option-bonus">{{ text_points }} {{ points }}</div>
+							{% endif %}
+							{% if reward %}
+							<div class="fm-product-option-bonus">{{ text_reward }} {{ reward }}</div>
+							{% endif %}
+							{% if recurrings %}
+							<div class="fm-product-option">
+								<div class="fm-control-label">{{ text_payment_recurring }}<span class="required">*</span></div>
+								<div class="form-group">
+									<select name="recurring_id" class="fm-select form-control">
+										<option value="">{{ text_select }}</option>
+										{% for recurring in recurrings %}
+										<option value="{{ recurring.recurring_id }}">{{ recurring.name }}</option>
+										{% endfor %}
+									</select>
+									<div class="help-block" id="recurring-description"></div>
+								</div>
+							</div>
+							{% endif %}
+						</div>
+						{% endif %}
+						<div class="fm-product-buttons fm-product-right-block">
+							<div class="d-flex align-items-center justify-content-between">
+								<div class="fm-product-quantity d-flex flex-column">
+									<label class="control-label product-quantity-label" for="input-quantity">{{ entry_qty }}:</label>
+									<div class="btn-group fm-product-quantity" role="group">
+										<button type="button" class="fm-product-quantity-btn fm-product-quantity-btn-left" onclick="updateValueProduct(true, false, false);">-</button>
+										<input type="text" class="form-control" name="quantity" value="{{ minimum }}" id="input-quantity" />
+										<input type="hidden" name="product_id" value="{{ product_id }}" />
+										<button type="button" class="fm-product-quantity-btn fm-product-quantity-btn-right" onclick="updateValueProduct(false, true, false);">+</button>
+										<input type="hidden" id="min-product-quantity" value="{{ minimum }}" name="min_quantity">
+										<input type="hidden" id="max-product-quantity" value="{{ max_quantity }}" name="max_quantity">
+									</div>
+								</div>
+								{% if oct_feelmart_data.product_wishlist is defined or oct_feelmart_data.product_compare is defined %}
+								<div class="fm-product-buttons-list">
+									{% if oct_feelmart_data.product_wishlist is defined and oct_feelmart_data.product_wishlist == 'on' %}
+									<div class="fm-product-buttons-item">
+										<a href="javascript:;" class="fm-product-buttons-link fm-product-buttons-link-wishlist d-flex align-items-center" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product_id }}');"><i class="far fa-heart"></i><span>{{ button_wishlist }}</span></a>
+									</div>
+									{% endif %}
+									{% if oct_feelmart_data.product_compare is defined and oct_feelmart_data.product_compare == 'on' %}
+									<a href="javascript:;" class="fm-product-buttons-link fm-product-buttons-link-compare d-flex align-items-center" title="{{ button_compare }}" onclick="compare.add('{{ product_id }}');"><i class="fas fa-sliders-h"></i><span>{{ button_compare }}</span></a>
+									{% endif %}
+								</div>
+								{% endif %}
+							</div>
+							<div class="fm-product-btn-group">
+								<button type="button" id="button-cart" data-loading-text="{{ text_loading }}" class="fm-product-btn fm-product-btn-cart d-flex align-items-center justify-content-center"><img src="catalog/view/theme/oct_feelmart/img//shop-cart-icon.svg" alt="{{ button_cart }}"><span>{{ button_cart }}</span></button>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% if (oct_feelmart_data.product_advantage is defined and oct_feelmart_data.product_advantage == 'on') and (oct_product_advantages is defined and oct_product_advantages is not empty) %}
+				<div class="fm-product-right-bottom">
+					<div class="fm-product-advantages fm-product-right-block">
+						{% for advantage in oct_product_advantages %}
+						<div class="fm-advantages-block text-center">
+							<div class="fm-advantages-img">
+								<i class="{{ advantage.icone }}"></i>
+							</div>
+							<div class="fm-advantages-title"><a href="{{ advantage.link }}" {% if advantage.information_id and advantage.popup %}data-rel="{{ advantage.information_id }}"{% else %}target="_blank"{% endif %} class="fm-product-advantages-link{% if advantage.popup %} agree{% endif %}" >{{ advantage.title }}</a></div>
+							<div class="fm-advantages-text">{{ advantage.text }}</div>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+				{% endif %}
+				{% if product_js_button is defined and product_js_button %}
+				<div class="fm-product-social-buttons">{{ product_js_button }}</div>
+				{% endif %}
+			</div>
+		</div>
+		{% if review_status %}
+		<div id="fm-product-page-reviews" class="fm-product-reviews">
+			<div class="fm-product-reviews-top d-flex justify-content-between">
+				<div class="fm-product-reviews-top-left">
+					<div class="fm-page-main-title">{{ tab_review_view }}<span class="fm-product-reviews-qauntity">{{ total_reviews }}</span></div>
+					<div class="fm-product-reviews-value">{{ oct_rating }}<span>/ 5</span></div>
+					<div class="fm-product-reviews-value-text">{{ tab_review_c }}</div>
+					{% if review_guest %}
+					<button type="button" class="fm-btn fm-btn-blue" data-toggle="modal" data-target="#fm-review-modal">{{ text_write }}</button>
+					<div class="modal" id="fm-review-modal" tabindex="-1" role="dialog" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered modal-dialog-940" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<div class="modal-title" id="fm-review">{{ text_write }}</div>
+									<button type="button" class="fm-close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true" class="fm-modal-close-icon fm-modal-close-left"></span>
+									<span aria-hidden="true" class="fm-modal-close-icon fm-modal-close-right"></span>
+									</button>
+								</div>
+								<div class="modal-body fm-modal-body-one-click">
+									<form id="form-review" class="d-flex flex-column flex-md-row">
+										<div class="fm-modal-body-one-click-left text-center">
+											<img src="{{ thumb }}" class="fm-modal-body-img" title="{{ heading_title }}" alt="{{ heading_title }}">
+											<div class="product_title">{{ heading_title }}</div>
+											<div class="fm-review-block d-flex align-items-center justify-content-center">
+												<div class="control-label">{{ entry_rating }}</div>
+												<div class="fm-module-rating-stars d-flex align-items-center">
+													<label class="fm-module-rating-star"><input class="d-none" type="radio" name="rating" value="1" /></label>
+													<label class="fm-module-rating-star"><input class="d-none" type="radio" name="rating" value="2" /></label>
+													<label class="fm-module-rating-star"><input class="d-none" type="radio" name="rating" value="3" /></label>
+													<label class="fm-module-rating-star"><input class="d-none" type="radio" name="rating" value="4" /></label>
+													<label class="fm-module-rating-star"><input class="d-none" type="radio" name="rating" value="5" /></label>
+												</div>
+												<script>
+													$(document).ready(function() {
+														$('#form-review .fm-module-rating-star').on('click', function () {
+															if ($(this).hasClass('fm-module-rating-star-is')){
+																$(this).nextAll().removeClass('fm-module-rating-star-is');
+															} else {
+																$(this).addClass('fm-module-rating-star-is');
+																$(this).prevAll().addClass('fm-module-rating-star-is');
+															}
+														});
+													});
+												</script>
+											</div>
+										</div>
+										<div class="fm-modal-body-one-click-right">
+											<div class="form-group-20">
+												<input type="text" name="name" class="form-control" id="InputName" placeholder="{{ entry_name }}">
+											</div>
+											<div class="form-group-10">
+												<textarea id="input-review" name="text" class="form-control" placeholder="{{ oct_product_yourreview }}"></textarea>
+											</div>
+											<div class="fm-modal-comment">{{ text_note }}</div>
+											<div class="form-group-20">
+												{{ captcha }}
+											</div>
+											<div class="btn-group" role="group" aria-label="fm-cont-btn">
+												<button type="button" id="button-review" class="fm-btn fm-btn-blue">{{ button_continue }}</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					{% endif %}
+				</div>
+				<div class="fm-product-reviews-top-right">
+					{% for oct_key, oct_raiting_stat in oct_raiting_stats %}
+					<div class="fm-product-reviews-rating-item d-flex align-items-center">
+						<div class="fm-product-reviews-rating-stars d-flex align-items-center">
+							<span class="fm-module-rating-star{% if oct_key >= 5 %} fm-module-rating-star-is{% endif %}"></span>
+							<span class="fm-module-rating-star{% if oct_key >= 4 %}  fm-module-rating-star-is{% endif %}"></span>
+							<span class="fm-module-rating-star{% if oct_key >= 3 %}  fm-module-rating-star-is{% endif %}"></span>
+							<span class="fm-module-rating-star{% if oct_key >= 2 %}  fm-module-rating-star-is{% endif %}"></span>
+							<span class="fm-module-rating-star{% if oct_key >= 1 %}  fm-module-rating-star-is{% endif %}"></span>
+						</div>
+						<div class="fm-product-reviews-rating-line">
+							<span class="fm-product-reviews-rating-line-value" style="width: {{ oct_raiting_stat.raiting }}%;"></span>
+						</div>
+						<div class="fm-product-reviews-rating-value">{{ oct_raiting_stat.sum }}</div>
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+			<div id="review">
+				{% if oct_reviews_list is not empty %}
+				{{ oct_reviews_list }}
+				{% endif %}
+			</div>
+		</div>
+		{% endif %}
+	</div>
+	{% if products %}
+	<div class="fm-related-box">
+		<div class="row row-padding-top" id="fm-related-products-row">
+			<div class="col-12 fm-main-title">{{ text_related }}</div>
+		</div>
+		<div id="fm-related-products" class="row no-gutters">
+			{% for product in products %}
+			<div class="col-6 col-md-4 col-lg-3 fm-item">
+				<div class="fm-module-item d-flex flex-column h-100">
+					<ul class="fm-module-buttons-list list-unstyled d-flex">
+						<li class="fm-module-buttons-item">
+							<button type="button" class="fm-module-buttons-link fm-module-buttons-compare" title="{{ button_compare }}" onclick="compare.add('{{ product.product_id }}');"><i class="fas fa-sliders-h"></i></button>
+						</li>
+						<li class="fm-module-buttons-item">
+							<button type="button" class="fm-module-buttons-link fm-module-buttons-wishlist" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><i class="far fa-heart"></i></button>
+						</li>
+					</ul>
+					<div class="fm-module-img">
+						<a href="{{ product.href }}">
+						<img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-fluid" />
+						</a>
+					</div>
+					{% if product.rating is not same as(false) %}
+					<div class="fm-module-rating d-flex align-items-center justify-content-center">
+						<div class="fm-module-rating-stars d-flex align-items-center">
+							{% for i in 1..5 %}
+							{% if product.rating < i %}
+							<span class="fm-module-rating-star"></span>
+							{% else %}
+							<span class="fm-module-rating-star fm-module-rating-star-is"></span>
+							{% endif %}
+							{% endfor %}
+						</div>
+						<div class="fm-module-reviews">
+							<i class="fas fa-comment"></i>
+							<span>{{ product.reviews }}</span>
+						</div>
+					</div>
+					{% endif %}
+					<div class="fm-module-title">
+						<a href="{{ product.href }}">{{ product.name }}</a>
+					</div>
+					{% if product.price %}
+					<div class="fm-module-price mt-auto">
+						{% if not product.special %}
+						<div class="fm-module-price-bottom">
+							<span class="fm-module-price-new">{{ product.price }}</span>
+						</div>
+						{% else %}
+						<div class="fm-module-price-top d-flex align-items-center justify-content-center">
+							<span class="fm-module-price-old">{{ product.price }}</span>
+						</div>
+						<div class="fm-module-price-bottom">
+							<span class="fm-module-price-new">{{ product.special }}</span>
+						</div>
+						{% endif %}
+						{% if product.tax %}
+						<div class="price-tax">{{ text_tax }} {{ product.tax }}</div>
+						{% endif %}
+					</div>
+					{% endif %}
+					<div class="fm-module-overlay">
+						<div class="fm-module-overlay-btn-box">
+							<button type="button" onclick="cart.add('{{ product.product_id }}');" class="fm-module-overlay-btn fm-btn">
+							<img src="catalog/view/theme/oct_feelmart/img/shop-cart-icon.svg" alt="{{ button_cart }}">
+							<span>{{ button_cart }}</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+		<div class="row">
+			<div class="col-12">
+				<button id="fm-related-products-button" class="fm-module-btn text-center w-100 h-100">{{ oct_show_more }}<span><i class="fas fa-chevron-down"></i></span></button>
+			</div>
+		</div>
+		<script>
+			octShowProducts('fm-related-products-button', 'fm-related-products', '8', '{{ products|length }}');
+		</script>
+	</div>
+	{% endif %}
+	{{ content_bottom }}
+</div>
+<script>
+$('select[name=\'recurring_id\'], input[name="quantity"]').change(function(){
+	$.ajax({
+		url: 'index.php?route=product/product/getRecurringDescription',
+		type: 'post',
+		data: $('input[name=\'product_id\'], input[name=\'quantity\'], select[name=\'recurring_id\']'),
+		dataType: 'json',
+		cache: false,
+		beforeSend: function() {
+			$('#recurring-description').html('');
+		},
+		success: function(json) {
+			$('.alert-dismissible, .text-danger').remove();
+
+			if (json['success']) {
+				$('#recurring-description').html(json['success']);
+			}
+		}
+	});
+});
+</script>
+<script>
+$('#button-cart').on('click', function() {
+	$.ajax({
+		url: 'index.php?route=checkout/cart/add',
+		type: 'post',
+		data: $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select, #product textarea'),
+		dataType: 'json',
+		cache: false,
+		beforeSend: function() {
+			$('#button-cart').button('loading');
+		},
+		complete: function() {
+			$('#button-cart').button('reset');
+		},
+		success: function(json) {
+			$('.alert-dismissible, .text-danger').remove();
+			$('.form-group').removeClass('has-error');
+
+			if (json['error']) {
+				if (json['error']['option']) {
+					let errorOption = '';
+					for (i in json['error']['option']) {
+						var element = $('#input-option' + i.replace('_', '-'));
+
+						if (element.parent().hasClass('input-group')) {
+							element.parent().after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
+						} else {
+							element.after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
+						}
+						errorOption += '<div class="alert-text-item">' + json['error']['option'][i] + '</div>';
+					}
+					fmNotify('danger', errorOption);
+				}
+
+				if (json['error']['error_warning']) {
+					fmNotify('danger', json['error']['error_warning']);
+				}
+
+				if (json['error']['recurring']) {
+					$('select[name=\'recurring_id\']').after('<div class="text-danger">' + json['error']['recurring'] + '</div>');
+				}
+
+				// Highlight any found errors
+				$('.text-danger').parent().addClass('has-error');
+			}
+
+			if (json['success']) {
+				fmNotify('success', json['success']);
+
+				if(typeof octYandexEcommerce == 'function') {
+					octYandexEcommerce(json);
+		        }
+
+				// Need to set timeout otherwise it wont update the total
+				setTimeout(function () {
+					$('.fm-menu-cart-index').html(json['total_products']);
+					$('.fm-menu-cart-text').html(json['total_amount']);
+				}, 100);
+			}
+		},
+        error: function(xhr, ajaxOptions, thrownError) {
+            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        }
+	});
+});
+</script>
+<script>
+{% if oct_datetimepicker is defined and oct_datetimepicker %}
+$('.date').datetimepicker({
+	language: '{{ datepicker }}',
+	pickTime: false,
+	icons: {
+		time: 'fa fa-clock',
+		date: 'fa fa-calendar-alt',
+		up: 'fa fa-arrow-up',
+		down: 'fa fa-arrow-down',
+		previous: 'fa fa-chevron-left',
+		next: 'fa fa-chevron-right',
+		today: 'fa fa-calendar-check',
+		clear: 'fa fa-trash-alt',
+		close: 'fa fa-times'
+	}
+});
+
+$('.datetime').datetimepicker({
+	language: '{{ datepicker }}',
+	pickDate: true,
+	pickTime: true,
+	icons: {
+		time: 'fa fa-clock',
+		date: 'fa fa-calendar-alt',
+		up: 'fa fa-arrow-up',
+		down: 'fa fa-arrow-down',
+		previous: 'fa fa-chevron-left',
+		next: 'fa fa-chevron-right',
+		today: 'fa fa-calendar-check',
+		clear: 'fa fa-trash-alt',
+		close: 'fa fa-times'
+	}
+});
+
+$('.time').datetimepicker({
+	language: '{{ datepicker }}',
+	pickDate: false,
+	icons: {
+		time: 'fa fa-clock',
+		date: 'fa fa-calendar-alt',
+		up: 'fa fa-arrow-up',
+		down: 'fa fa-arrow-down',
+		previous: 'fa fa-chevron-left',
+		next: 'fa fa-chevron-right',
+		today: 'fa fa-calendar-check',
+		clear: 'fa fa-trash-alt',
+		close: 'fa fa-times'
+	}
+});
+{% endif %}
+
+$('button[id^=\'button-upload\']').on('click', function() {
+	var node = this;
+
+	$('#form-upload').remove();
+
+	$('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
+
+	$('#form-upload input[name=\'file\']').trigger('click');
+
+	if (typeof timer != 'undefined') {
+    	clearInterval(timer);
+	}
+
+	timer = setInterval(function() {
+		if ($('#form-upload input[name=\'file\']').val() != '') {
+			clearInterval(timer);
+
+			$.ajax({
+				url: 'index.php?route=tool/upload',
+				type: 'post',
+				dataType: 'json',
+				data: new FormData($('#form-upload')[0]),
+				cache: false,
+				contentType: false,
+				processData: false,
+				beforeSend: function() {
+					$(node).button('loading');
+				},
+				complete: function() {
+					$(node).button('reset');
+				},
+				success: function(json) {
+					$('.text-danger').remove();
+
+					if (json['error']) {
+						$(node).parent().find('input').after('<div class="text-danger">' + json['error'] + '</div>');
+					}
+
+					if (json['success']) {
+						alert(json['success']);
+
+						$(node).parent().find('input').val(json['code']);
+					}
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+					alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+				}
+			});
+		}
+	}, 500);
+});
+</script>
+<script>
+$('#review').delegate('.pagination a', 'click', function(e) {
+    e.preventDefault();
+
+    $('#review').fadeOut('fast');
+
+    $('#review').load(this.href);
+
+    $('#review').fadeIn('fast');
+    
+    scrollToElement('#fm-product-page-reviews');
+});
+
+$("#InputName, #input-review").on("change paste keyup", function() {
+	$(this).removeClass('error_style');
+});
+
+$('#button-review').on('click', function() {
+	$.ajax({
+		url: 'index.php?route=product/product/write&product_id={{ product_id }}',
+		type: 'post',
+		dataType: 'json',
+		cache: false,
+		data: $('#form-review').serialize(),
+		beforeSend: function() {
+			$('#button-review').button('loading');
+		},
+		complete: function() {
+			$('#button-review').button('reset');
+		},
+		success: function(json) {
+			$('.alert-dismissible').remove();
+
+			if (json['error']) {
+				let errorOption = '';
+				
+				$.each(json['error'], function(i, val) {
+					$('#fm-review-modal [name="' + i + '"]').addClass('error_style');
+					errorOption += '<div class="alert-text-item">' + val + '</div>'; 
+				});
+				
+				fmNotify('danger', errorOption);
+			}
+
+			if (json['success']) {
+				fmNotify('success', json['success']);
+				$('#fm-review-modal').modal('hide');
+				$('input[name=\'name\']').val('');
+				$('textarea[name=\'text\']').val('');
+				$('#fm-review-modal input[name=\'rating\']:checked').prop('checked', false);
+				$('#fm-review-modal .fm-module-rating-star-is').removeClass('fm-module-rating-star-is');
+			}
+		}
+	});
+});
+
+$('#input-quantity').on('change',function(e){
+	updateValueProduct(false, false, true);
+});
+
+function updateValueProduct(minus, plus, manual) {
+	let min = parseInt($('#input-quantity').val());
+	let currentMinimum = parseInt($('#min-product-quantity').val());
+	let max = parseInt($('#max-product-quantity').val());
+
+	if(max === 0) return;
+
+	if (minus && min > 1) {
+
+		if (currentMinimum >= min) {
+			$("#input-quantity").val(currentMinimum);
+			updateProductPrice();
+			return;
+		} else if (min > max) {
+			$('#input-quantity').val(max);
+			updateProductPrice();
+			return;
+		}
+
+		$('#input-quantity').val(~~$('#input-quantity').val()-1);
+	}
+
+	if (plus) {
+		if(max && min > max-1) {
+			$('#input-quantity').val(max);
+			updateProductPrice();
+			return;
+		} else if (currentMinimum > min) {
+			$('#input-quantity').val(currentMinimum);
+			updateProductPrice();
+			return;
+		}
+
+		$('#input-quantity').val(~~$('#input-quantity').val()+1);
+	}
+
+	if (manual) {
+		if (currentMinimum >= min) {
+			$('#input-quantity').val(currentMinimum);
+			updateProductPrice();
+			return;
+		} else if (min > max) {
+			$('#input-quantity').val(max);
+			updateProductPrice();
+			return;
+		}
+
+	}
+
+	updateProductPrice();
+}
+
+$('#fm-product-options-box input, #fm-product-options-box select').on('change', function() {
+	updateProductPrice();
+});
+
+function updateProductPrice() {
+	$.ajax({
+		type: 'post',
+		url:  'index.php?route=product/product/updatePrices',
+		data: $('#product-product input[type=\'text\'], #product-product input[type=\'hidden\'], #product-product input[type=\'radio\']:checked, #product-product input[type=\'checkbox\']:checked, #product-product select'),
+		dataType: 'json',
+		cache: false,
+		success: function(json) {
+			{% if special %}
+			$('#product-product .fm-module-price-old').html(json['price']);
+			$('#product-product .fm-module-price-new').html(json['special']);
+			$('#product-product .fm-module-you-save-price').html(json['you_save_price']);
+			{% else %}
+			$('#product-product .fm-module-price-new').html(json['price']);
+			{% endif %}
+
+			{% if tax %}
+			$('#fm-product-modal-tax').html(json['tax']);
+			{% endif %}
+		}
+	});
+}
+{% if minimum > 1 %}
+updateProductPrice();
+{% endif %}
+</script>
+{% if oct_is_youtube %}
+<script>
+function findVideos() {
+	let videos = document.querySelectorAll('.fm-video');
+
+	for (let i = 0; videos.length > i; i++) {
+		setupVideo(videos[i]);
+	}
+}
+
+function setupVideo(video) {
+	let link = video.querySelector('.fm-video__link');
+	let media = video.querySelector('.fm-video__media');
+	let button = video.querySelector('.fm-video__button');
+	let id = parseMediaURL(media);
+
+	video.addEventListener('click', () => {
+		let iframe = createIframe(id);
+
+		link.remove();
+		button.remove();
+		video.appendChild(iframe);
+	});
+
+	link.removeAttribute('href');
+	video.classList.add('fm-video--enabled');
+}
+
+function parseMediaURL(media) {
+	let regexp = /https:\/\/i\.ytimg\.com\/vi\/([a-zA-Z0-9_-]+)\/maxresdefault\.jpg/i;
+	let url = media.src;
+	let match = url.match(regexp);
+
+	return match[1];
+}
+
+function createIframe(id) {
+	let iframe = document.createElement('iframe');
+
+	iframe.setAttribute('allowfullscreen', '');
+	iframe.setAttribute('allow', 'autoplay');
+	iframe.setAttribute('src', generateURL(id));
+	iframe.classList.add('fm-video__media');
+
+	return iframe;
+}
+
+function generateURL(id) {
+	let query = '?rel=0&showinfo=0&autoplay=1';
+
+	return 'https://www.youtube.com/embed/' + id + query;
+}
+
+findVideos();
+</script>
+{% endif %}
+<style>
+	li.list-inline-item.option-value-name {
+		border: 2px solid;
+		padding: 6px;
+		margin: 4px;
+		border-radius: 15px;
+		border-color: #17ad00;
+	}
+	li.list-inline-item.option-value-name.selected{
+		background: #17ad00;
+		color: #fff;
+	}
+	#fm-product-params .param-values span.filtered {
+		text-decoration: underline;
+	}
+</style>
+{{ footer }}

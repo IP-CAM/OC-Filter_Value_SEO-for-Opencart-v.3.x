@@ -1,0 +1,29 @@
+{% if show_values_limit > 0 and option.values|length > show_values_limit %}
+{% set hidden_values = option.values[show_values_limit:] %}
+{% set values = option.values[:show_values_limit] %}
+{% else %}
+{% set hidden_values = [] %}
+{% set values = option.values %}
+{% endif %}
+
+{% for value in values %}
+  {% if value.is_attribute %}
+  {% else %}
+    {% include 'default/template/extension/module/ocfilter/value_item.twig' %}
+  {% endif %}
+  {% endfor %}
+
+{% if hidden_values|length > 0 %}
+<div class="collapse" id="ocfilter-hidden-values-{{ option.option_id }}">
+  <hr style="margin:0 0 10px;" />
+  {% for value in hidden_values %}
+    {% if value.is_attribute %}
+    {% else %}
+      {% include 'default/template/extension/module/ocfilter/value_item.twig' %}
+    {% endif %}
+  {% endfor %}
+</div>
+<div class="collapse-value">
+  <button type="button" data-target="#ocfilter-hidden-values-{{ option.option_id }}" data-toggle="collapse" class="btn btn-block">{{ text_show_all }} <i class="fa fa-fw"></i></button>
+</div>
+{% endif %}

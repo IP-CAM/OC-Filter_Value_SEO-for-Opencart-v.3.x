@@ -1,0 +1,238 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-ocfilter" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger">
+      <i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-body">
+	      <form id="form-ocfilter" action="{{ action }}" method="post">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab-general" data-toggle="tab">{{ tab_general }}</a></li>
+            <li><a href="#tab-other" data-toggle="tab">{{ tab_other }}</a></li>
+            <li><a href="#tab-values" data-toggle="tab">{{ tab_values }}</a></li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab-general">
+		          <table class="form">
+		            <tr>
+		              <td>{{ entry_name }}</td>
+		              <td>
+		                {% for language in languages %}
+		                <input type="text" name="ocfilter_option_description[{{ language.language_id }}][name]" value="{{ name[language.language_id] ? name[language.language_id].name }}" size="50" />&nbsp;<img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /><br />
+                    {% endfor %}
+		              </td>
+		            </tr>
+		            <tr>
+		              <td>{{ entry_keyword }}</td>
+		              <td>
+		                <input type="text" name="keyword" value="{{ keyword }}" size="50" />
+		              </td>
+		            </tr>
+		            <tr>
+		              <td>{{ entry_category }}</td>
+		              <td>
+                    <input type="text" name="category" value="" placeholder="{{ entry_category }}" id="input-category" class="form-control" />
+                    <div id="option-category" class="well well-sm" style="height: 150px; overflow: auto;">
+                      {% for category_id, _name in option_categories %}
+                      <div id="option-category{{ category_id }}">
+                        <i class="fa fa-minus-circle"></i> {{ _name }}
+                        <input type="hidden" name="category_id[{{ category_id }}]" value="{{ _name }}" />
+                      </div>
+                      {% endfor %}
+                    </div>
+		              </td>
+		            </tr>
+		            <tr>
+		              <td>{{ entry_type }}</td>
+		              <td>
+		                <select name="type" class="with-subfield" data-subfield="type">
+		                  {% for key, value in types %}
+		                  {% if type == key %}
+		                  <option value="{{ key }}" selected="selected">{{ value }}</option>
+                      {% else %}
+  		                <option value="{{ key }}">{{ value }}</option>
+                      {% endif %}
+                      {% endfor %}
+		                </select>
+										<div class="subfield type sf-checkbox sf-radio{{ (type == 'checkbox' or type == 'radio') ? ' visible' : '' }}">
+		                	<label><span>{{ entry_selectbox }}</span> <input type="checkbox" name="selectbox" value="1"{{ selectbox ? ' checked="checked"' : '' }} /></label>
+										</div>
+										<div class="subfield type sf-checkbox sf-radio{{ (type == 'checkbox' or type == 'radio') ? ' visible' : '' }}">
+		                	<label><span>{{ entry_is_color }}</span> <input type="checkbox" name="color" value="1"{{ color ? ' checked="checked"' : '' }} /></label>
+										</div>
+										<div class="subfield type sf-checkbox sf-radio{{ (type == 'checkbox' or type == 'radio') ? ' visible' : '' }}">
+		                	<label><span>{{ entry_is_image }}</span> <input type="checkbox" name="image" value="1"{{ image ? ' checked="checked"' : '' }} /></label>
+										</div>
+		              </td>
+		            </tr>
+		            <tr>
+		              <td>{{ entry_sort_order }}</td>
+		              <td><input type="text" name="sort_order" value="{{ sort_order }}" size="2" /></td>
+		            </tr>
+		            <tr>
+		              <td>{{ entry_status }}</td>
+		              <td>
+		                {% if status %}
+										<input type="checkbox" name="status" checked="checked" value="1" />
+                    {% else %}
+										<input type="checkbox" name="status" value="1" />
+                    {% endif %}
+		              </td>
+		            </tr>
+		          </table>
+		        </div>
+		        <div id="tab-other" class="tab-pane">
+		          <table class="form">
+		            <tr>
+		              <td>{{ entry_postfix }}</td>
+		              <td>
+		                {% for language in languages %}
+		                <input type="text" name="ocfilter_option_description[{{ language.language_id }}][postfix]" value="{{ name[language.language_id] ? name[language.language_id].postfix }}" size="10" />&nbsp;<img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language['name'] }}" /><br />
+                    {% endfor %}
+		              </td>
+		            </tr>
+		            <tr>
+		              <td>{{ entry_description }}</td>
+		              <td>
+		                {% for language in languages %}
+		                <textarea name="ocfilter_option_description[{{ language.language_id }}][description]" rows="3" cols="50" style="resize: none;">{{ name[language.language_id] ? name[language.language_id].description }}</textarea>&nbsp;<img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /><br />
+                    {% endfor %}
+		              </td>
+		            </tr>
+		            <tr>
+		              <td>{{ entry_store }}</td>
+		              <td>
+		                <div class="scrollbox">
+		                  {% set class = 'even' %}
+		                  <div class="{{ class }}">
+		                    {% if 0 in option_store %}
+		                    <input type="checkbox" name="option_store[]" value="0" checked="checked" /> {{ text_default }}
+                        {% else %}
+		                    <input type="checkbox" name="option_store[]" value="0" /> {{ text_default }}
+                        {% endif %}
+		                  </div>
+		                  {% for store in stores %}
+		                  {% set class = (class == 'even' ? 'odd' : 'even') %}
+		                  <div class="{{ class }}">
+		                    {% if store.store_id in option_store %}
+		                    <input type="checkbox" name="option_store[]" value="{{ store.store_id }}" checked="checked" /> {{ store.name }}
+                        {% else %}
+		                    <input type="checkbox" name="option_store[]" value="{{ store.store_id }}" /> {{ store.name }}
+                        {% endif %}
+		                  </div>
+                      {% endfor %}
+		                </div>
+		              </td>
+		            </tr>
+		          </table>
+		        </div>
+		        <div id="tab-values" class="tab-pane">
+		          <div class="header"><a onclick="ocfilter.form.addValue();" class="btn btn-primary">{{ text_add_value }}</a></div>
+		          <ul id="sortable">
+		            {% for key, value in ocfilter_option_values %}
+		            <li>
+		              <a class="delete" onclick="ocfilter.form.deleteValue($(this));">Delete</a>
+		              <div class="fields">
+		              	<input type="hidden" name="ocfilter_option_value[update][{{ value.value_id }}][image]" value="{{ value.image }}" id="value-image-{{ key }}" />
+		                <input type="hidden" name="ocfilter_option_value[update][{{ value.value_id }}][color]" value="{{ value.color }}" />
+		              	<input type="number" name="ocfilter_option_value[update][{{ value.value_id }}][sort_order]" value="{{ value.sort_order }}" />
+		                {% for language in languages %}
+		                <label><input type="text" class="value-name" name="ocfilter_option_value[update][{{ value.value_id }}][language][{{ language.language_id }}][name]" value="{{ value.language[language.language_id] ? value.language[language.language_id].name }}" size="80" />&nbsp;<img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></label>
+                        <label><input type="text" class="value-name seo-name" title ="SEO" name="ocfilter_option_value[update][{{ value.value_id }}][language][{{ language.language_id }}][name_seo]" value="{{ value.language[language.language_id] ? value.language[language.language_id].name_seo }}" size="80" />&nbsp;<img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}SEO" /></label>
+                        {% endfor %}
+						  <label class = "attribute-check">
+							  Атрибут
+							  {% if value.is_attribute == '1' %}
+							  <input type="checkbox" name="ocfilter_option_value[update][{{ value.value_id }}][is_attribute]" value="1"  checked />
+							  {% else %}
+							  <input type="checkbox" name="ocfilter_option_value[update][{{ value.value_id }}][is_attribute]" value="1"  />
+								  {% endif %}
+						  </label>
+		              </div>
+									<a href="#" class="color-handler{{ color ? ' visible' }}" title="{{ text_select_color }}"{{ value.color ? ' style="background: #' ~ value.color ~ ';"' }}></a>
+									<a href="#" class="image-handler{{ image ? ' visible' }}{{ value.image ? ' inserted' }}" title="{{ text_browse_image }}" id="value-image-thumb-{{ key }}"><img src="{{ value.thumb }}" alt="" /><i class="fa fa-fw fa-picture-o"></i></a>
+		            </li>
+                {% endfor %}
+		          </ul>
+		          <div class="bottom"><a onclick="ocfilter.form.addValue();" class="btn btn-primary">{{ text_add_value }}</a></div>
+						</div>
+	        </div>
+      	</form>
+			</div>
+    </div>
+  </div>
+
+<script type="text/javascript"><!--
+
+$(function() {
+  $('.with-subfield').trigger('change');
+
+  // Category
+  $('input[name=\'category\']').autocomplete({
+  	'source': function(request, response) {
+  		$.ajax({
+  			url: 'index.php?route=catalog/category/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
+  			dataType: 'json',
+  			success: function(json) {
+  				response($.map(json, function(item) {
+  					return {
+  						label: item['name'],
+  						value: item['category_id']
+  					}
+  				}));
+  			}
+  		});
+  	},
+  	'select': function(item) {
+  		$('#option-category' + item['value']).remove();
+
+  		$('#option-category').append('<div id="option-category' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="category_id[' + item['value'] + ']" value="' + item['label'] + '" /></div>');
+
+  		$('input[name=\'category\']').val('');
+  	}
+  });
+
+  $('#option-category').delegate('.fa-minus-circle', 'click', function() {
+  	$(this).parent().remove();
+  });
+});
+
+ocfilter.php.color = {{ color }};
+ocfilter.php.image = {{ image }};
+ocfilter.php.no_image = '{{ no_image }}';
+
+ocfilter.php.text_image_manager = '{{ text_image_manager }}';
+ocfilter.php.text_select_color = '{{ text_select_color }}';
+ocfilter.php.text_browse_image = '{{ text_browse_image }}';
+
+ocfilter.php.languages = [];
+
+{% for language in languages %}
+ocfilter.php.languages.push({
+	'language_id': {{ language.language_id }},
+	'name': '{{ language.name }}',
+  'code': '{{ language.code }}'
+});
+{% endfor %}
+//--></script>
+</div>
+{{ footer }}
