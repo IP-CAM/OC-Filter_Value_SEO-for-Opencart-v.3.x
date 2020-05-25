@@ -626,7 +626,8 @@ final class OCFilter {
           }
 
       	  //$values_name .= $value['name'];
-      	  $values_name .= $value['seo_name'];
+
+      	  $values_name .= $value['seo_name']? $value['seo_name']: $value['name'];
         }
 
         if ($values_name) {
