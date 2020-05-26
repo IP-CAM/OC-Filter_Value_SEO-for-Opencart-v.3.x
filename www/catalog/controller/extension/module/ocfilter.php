@@ -165,7 +165,7 @@ class ControllerExtensionModuleOCFilter extends Controller {
 	    foreach ($options as &$option){
 	        foreach ($option['values'] as &$value){
                $value['href'] = str_replace('&amp;', '&', $this->ocfilter->link($value['params']));
-               $value['follow'] =$this->makeNoFollow($value['params'])?'nofollow':'';
+               $value['follow'] =$this->makeNoFollow($value['params'])?'rel ="nofollow"':'';
             }
         }
 
