@@ -64,7 +64,8 @@ class ModelExtensionModuleOcfilterValueSeoFront extends Model {
 
         foreach ($SeoOptionsForCategory as $valueId=>$seoValue){
             if (in_array($valueId, $selectedValues)){
-                $description[]=htmlspecialchars_decode($seoValue[$languageId]['description']);
+
+                $description[]=(isset($seoValue[$languageId]))? htmlspecialchars_decode($seoValue[$languageId]['description']):'';
             }
         }
 
@@ -96,6 +97,7 @@ class ModelExtensionModuleOcfilterValueSeoFront extends Model {
 
         foreach ($SeoOptionsForCategory as $valueId=>$seoValue){
             if (in_array($valueId, $selectedValues)){
+
                 if(isset($seoValue[$languageId])) {
                     $description[] = htmlspecialchars_decode($seoValue[$languageId]['description']);
                 }
