@@ -95,6 +95,7 @@ class ModelExtensionModuleCognate extends Model
                 'option_id' => $option['option_id'],
                 'name' => $option['name'].', '.  $option['postfix'],
                 'values' => $values,
+                'image' => $option['image'],
             ];
         }
 
@@ -178,10 +179,13 @@ class ModelExtensionModuleCognate extends Model
                     'option_id'=>$optionId,
                     'value_id'=>$valueId,
                 ];
-
+                $productImg = null;
                 $productId = $this->getProductIdByOptions($value,$OcFilterCategoryOptionsWOCurrent);
-
+                if ($option['image']==1 && $productId ) {
+                    $productImg = $this->getProductImg($productId);
+                }
                 $productUrl = $productId ? $this->url->link('product/product', 'product_id=' . $productId):'';
+
                 if ($productId) $variants[]=$productId;
 
                 $selected = ($productId == $this->currentProductId)? 'selected':'';
@@ -197,7 +201,8 @@ class ModelExtensionModuleCognate extends Model
                     'value_name' => $value['name'],
                     'product_id' => $productId,
                     'url'=> $productUrl,
-                    'selected' => $selected
+                    'selected' => $selected,
+                    'image' => $productImg
                 ];
             }
 
@@ -208,8 +213,9 @@ class ModelExtensionModuleCognate extends Model
             $products[$optionId]=[
                 'option_id'=> $optionId,
                 'option_name'=> $CurrentOptionName,
+                'isImage' => ($option['image'] == 1) ? true : false,
+                'show_option' => $showOption,
                 'values'=> $data,
-                'show_option' => $showOption
             ];
 
         }
@@ -232,6 +238,23 @@ class ModelExtensionModuleCognate extends Model
         });
         return $options;
     }
+
+    private function getProductImg($productId){
+
+        $this->load->model('catalog/product');
+        $this->load->model('tool/image');
+        $product_info = $this->model_catalog_product->getProduct($productId);
+
+        $image = null;
+        if ($product_info['image']) {
+           $image = $this->model_tool_image->resize($product_info['image'],
+               $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'));
+        }
+        return $image;
+    }
+
+
+
 
 
     /**
