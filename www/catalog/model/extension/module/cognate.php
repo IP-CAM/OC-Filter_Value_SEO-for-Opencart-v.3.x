@@ -81,15 +81,15 @@ class ModelExtensionModuleCognate extends Model
         $options = [];
         foreach ($query as $option ){
             $values = [];
-                foreach ($option['values'] as $value){
-                    $isAttribute = ($value['is_attribute'] == '1')? true: false;
-                    $values[]=[
-                        'value_id' => $value['value_id'],
-                        'name' => $value['name'],
-                        'option_id' => $value['option_id'],
-                        'is_attribute'=>$isAttribute
-                    ];
-                }
+            foreach ($option['values'] as $value){
+                $isAttribute = ($value['is_attribute'] == '1')? true: false;
+                $values[]=[
+                    'value_id' => $value['value_id'],
+                    'name' => $value['name'],
+                    'option_id' => $value['option_id'],
+                    'is_attribute'=>$isAttribute
+                ];
+            }
 
             $options[]=[
                 'option_id' => $option['option_id'],
@@ -108,10 +108,21 @@ class ModelExtensionModuleCognate extends Model
      * @return mixed OC filter options for product
      *
      */
-    private function getProductOcFilterOptions($productId)
+    private function getProductOcFilterOptions($productId,$valueId = false)
     {
         $sql = "SELECT option_id, value_id FROM " . DB_PREFIX . "ocfilter_option_value_to_product
                 where product_id ='".$productId."' ";
+                $options =$this->db->query($sql)->rows;
+        return $options;
+    }
+
+    private function getProductOcFilterRangeOptions($productId)
+    {
+        $sql = "SELECT * FROM " . DB_PREFIX . "ocfilter_option_value_to_product
+                where product_id ='".$productId."' ";
+
+            $sql.= " AND value_id='0'";
+
         $options =$this->db->query($sql)->rows;
         return $options;
     }
@@ -133,6 +144,7 @@ class ModelExtensionModuleCognate extends Model
 
         $options =$this->db->query($sql)->rows;
 
+
         return $options;
     }
 
@@ -153,56 +165,56 @@ class ModelExtensionModuleCognate extends Model
             $CurrentOptionName = $option['name'];
             $optionId = $option['option_id'];
 
-                $products[$optionId]=[];
-                $data = [];
+            $products[$optionId]=[];
+            $data = [];
 
-                $OcFilterCategoryOptionsWOCurrent = $this->filterCurrentOptions($currentOptions,$option['option_id']);
+            $OcFilterCategoryOptionsWOCurrent = $this->filterCurrentOptions($currentOptions,$option['option_id']);
 
-                foreach ($option['values'] as $value){
+            foreach ($option['values'] as $value){
 
-                    $valueId = $value['value_id'];
-                    $selected = false;
-                    $lookingOption = [
-                        'option_id'=>$optionId,
-                        'value_id'=>$valueId,
-                    ];
+                $valueId = $value['value_id'];
+                $selected = false;
+                $lookingOption = [
+                    'option_id'=>$optionId,
+                    'value_id'=>$valueId,
+                ];
 
-                    $productId = $this->getProductIdByOptions($value,$OcFilterCategoryOptionsWOCurrent);
+                $productId = $this->getProductIdByOptions($value,$OcFilterCategoryOptionsWOCurrent);
 
-                    $productUrl = $productId ? $this->url->link('product/product', 'product_id=' . $productId):'';
-                    if ($productId) $variants[]=$productId;
+                $productUrl = $productId ? $this->url->link('product/product', 'product_id=' . $productId):'';
+                if ($productId) $variants[]=$productId;
 
-                    $selected = ($productId == $this->currentProductId)? 'selected':'';
+                $selected = ($productId == $this->currentProductId)? 'selected':'';
 
-                    if (in_array($lookingOption, $currentOptions)) {
-                        $selected = 'selected';
-                        $countCurrentSelectedValues++;
-                    }
-
-
-                    $data[] =[
-                        'value_id' => $valueId,
-                        'value_name' => $value['name'],
-                        'product_id' => $productId,
-                        'url'=> $productUrl,
-                        'selected' => $selected
-                    ];
+                if (in_array($lookingOption, $currentOptions)) {
+                    $selected = 'selected';
+                    $countCurrentSelectedValues++;
                 }
 
-                // show OC product values only if exist variants of products with other set of values
-                $countValues = count($variants);
-                $showOption = $countCurrentSelectedValues !== $countValues && !empty($variants);
 
-                $products[$optionId]=[
-                    'option_id'=> $optionId,
-                    'option_name'=> $CurrentOptionName,
-                    'values'=> $data,
-                    'show_option' => $showOption
+                $data[] =[
+                    'value_id' => $valueId,
+                    'value_name' => $value['name'],
+                    'product_id' => $productId,
+                    'url'=> $productUrl,
+                    'selected' => $selected
                 ];
+            }
+
+            // show OC product values only if exist variants of products with other set of values
+            $countValues = count($variants);
+            $showOption = $countCurrentSelectedValues !== $countValues && !empty($variants);
+
+            $products[$optionId]=[
+                'option_id'=> $optionId,
+                'option_name'=> $CurrentOptionName,
+                'values'=> $data,
+                'show_option' => $showOption
+            ];
 
         }
 
-      return $products;
+        return $products;
     }
 
 
@@ -243,11 +255,11 @@ class ModelExtensionModuleCognate extends Model
             $isoptionsEqual = $this->compareOptions($product['options'],$currentoptions);
 
             if ($isoptionsEqual) {
-                    $productId =  $product['product_id'];
-                    return $productId;
+                $productId =  $product['product_id'];
+                return $productId;
             }
             // if not found product for all options mix get product with  option value = $value
-          $productId = $this->getMinimalProductPrice($addCurrentOption);
+            $productId = $this->getMinimalProductPrice($addCurrentOption);
         }
 
         return $productId;
@@ -315,11 +327,11 @@ class ModelExtensionModuleCognate extends Model
      */
     private function compareUniqueOptions($productOptions, $currentOption, $productId){
 
-       foreach ($productOptions as $option){
-           if ($currentOption ==  $option) {
-               return true;
-           }
-       }
+        foreach ($productOptions as $option){
+            if ($currentOption ==  $option) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -327,8 +339,9 @@ class ModelExtensionModuleCognate extends Model
     {
 
         $productId = $product['product_id'];
+
         $categoryId = $this->model_catalog_product->getCategories($productId)[0]['category_id'];
-       // $categoryPath = $this->url->link('product/category', 'category_id=' . $categoryId);
+
         $categoryPath= trim($this->url->link('product/category', 'path=' . $this->request->get['path']),'/');
 
         $params = $this->getProductOcFilterOptionsForAtributes($productId);
@@ -372,8 +385,54 @@ class ModelExtensionModuleCognate extends Model
             $options[$param['option_id']]['values'][] = $param;
         }
 
+        $rangeParams = $this->getRangeOption($productId);
+        $options =array_merge($options,$rangeParams);
+
 
         return $options;
+    }
+    public function getRangeOption($productId){
+        $rangeOptions=[];
+        $options = $this->getProductOcFilterRangeOptions($productId);
+
+        foreach ($options as $option){
+            if ($option['slide_value_min'] != 0 || $option['slide_value_max'] != 0){
+                $optionId = $option['option_id'];
+                $optionData= $this->getOcFilterOption($optionId);
+                $optionName = $optionData['name'];
+                if ($option['slide_value_min'] == $option['slide_value_max'] ){
+                    $valueName = round($option['slide_value_min'],2).$optionData['postfix'];
+                }else{
+                    $valueName = round($option['slide_value_min'],2).'-'.round($option['slide_value_min'],2).$optionData['postfix'];
+                }
+                $rangeOptions [$optionId] =[
+                    'name' =>$optionName,
+                    'values'=>[
+                        '0'=>[
+                            'option_id'=>$optionId,
+                            'option_name'=>$optionName,
+                            'value_id'=>0,
+                            'value_name'=>$valueName,
+                            'is_attribute' => 1,
+                            'path'=>''
+                        ]
+                    ]
+                ];
+            }
+        }
+
+        return $rangeOptions;
+    }
+
+
+    private function getOcFilterOption($optionId){
+
+        return $this->db->query("
+                SELECT * 
+                FROM " . DB_PREFIX . "ocfilter_option_description 
+                where option_id='".(int)$optionId."'
+                and language_id ='".(int)$this->config->get('config_language_id')."'
+            ")->row;
     }
 }
 
@@ -402,4 +461,3 @@ function cmpPrice($a, $b)
 {
     return strcmp($a["price"], $b["price"]);
 }
-
